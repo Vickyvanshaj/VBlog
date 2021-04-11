@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block homeactive %}
+active
+ {% endblock homeactive %}
+
+{% block title %}
+    Home
+{% endblock title %}
+
+{% block css %}
+.jumbotron {
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+    background-color: #e9ecef;
+    border-radius: .3rem;
+  }
+{% endblock css %}
+  {% load static %}
+
+{% block body %}
+<div class="container my-4">
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to Vblog</h1>
+    <p class="lead">This is a simple blog website, allowing you to view awesome Blogs.It allows you Login,Logout within the wesite. You can also write comments within the blog.You can also reply to a comment.You can also see Post views of a certain post.You can also contact the administrator of this blog by using the contact menu</p>
+    <hr class="my-4">
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa ipsum accusantium quo ad, natus debitis alias non dolores? Maiores praesentium iure velit. Eum dolorem eligendi repellendus doloribus quos doloremque beatae?</p>
+    <p class="lead">
+      <a class="btn btn-primary btn-lg" href="/blog" role="button">Go To Blog</a>
+    </p>
+  </div>
+  </div>
+
+  <div class="container">
+      <h2 class="text-center my-5">Checkout Our Recent Blog Posts</h2>
+      
+      {% for post in allPosts %}
+        
+      <div class="col-md-12">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+          <div class="col p-4 d-flex flex-column position-static">
+            <strong class="d-inline-block mb-2 text-primary">{{post.author}} (<span>{{post.views}} views</span>)</strong>
+            <h3 class="mb-0">{{post.title}}</h3>
+            <div class="mb-1 text-muted">{{post.timeStamp}}</div>
+            <p class="card-text mb-auto">{{post.content | truncatechars:200}}</p>
+            <a href="/blog/{{post.slug}}" class="stretched-link"><button class="btn btn-primary"> Continue reading</button></a>
+          </div>
+          <div class="col-auto d-none d-lg-block">
+            <img src="{% static 'images/blog.png' %}" class="img-fluid img-thumbnail" width="400px" alt="" srcset="">
+         
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+
+    </div>
+{% endblock body %}
+    

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{%load humanize%}
+{% block title %}
+Blog Posts
+{% endblock title %}
+{% block blogactive %}
+active
+{% endblock blogactive %}
+{% load extras %}
+{% block body %}
+
+<div class="container my-3">
+    <div class="blog-post">
+        <h2 class="blog-post-title">{{post.title}}</h2>
+        <p class="blog-post-meta">{{post.timeStamp}} by <a href="/about">{{post.author}}</a> (<span>{{post.views}} views</span>)</p>
+        
+        <p>{{post.content|safe}}</p>
+        <hr>
+
+    </div>
+</div>
+<div class="container">
+    <h2>Comments({{count}})</h2>
+
+    <div class="my-2">
+
+        {% if user.is_anonymous %}
+
+        <p class="text-primary mx-4 lead">Log In to comment</p>
+        <hr>
+        {% else %}
+        <form action="/blog/postComment" method="post">
+            {% csrf_token %}
+
+            <div class="mb-3 form-group ">
+                <input type="text" class="form-control" id="comment" name="comment" aria-describedby="comment"
+                    placeholder="Enter comment here">
+
+            </div>
+
+            <input type="hidden" name="postId" value={{post.id}}>
+            <input type="hidden" name="parentId" value="">
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </form>
+        {% endif %}
+    </div>
+
+
+    {% for comment in comments %}
+
+    <div class="row my-3">
+        <div class="col-md-1">
+            <img class="rounded-circle mx-auto d-block w-50 border img-fluid " src="/static/images/user.png" alt="" srcset="">
+        </div>
+        <div class="col-md-11"><b style="font-size: 18px;">{{comment.user.username}}</b> <span
+                class='badge bg-secondary'>
+                {{comment.timestamp|naturaltime}}</span>
+            <div>{{comment.comment}}</div>
+            <div class="reply">
+                {% if user.is_authenticated %}
+                <button class="btn btn-primary my-2 btn-sm" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#replyBox{{comment.id}}" aria-expanded="false" aria-controls="replyBox">
+                    Reply
+                </button>
+
+                <div class="collapse" id="replyBox{{comment.id}}">
+                    <div class="card card-body ">
+                        <form action="/blog/postComment" method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3 my-2">
+                                <input type="text" class="form-control" id="comment" name='comment'
+                                    aria-describedby="comment" placeholder="Write your reply...">
+
+                                <input type="hidden" name="parentId" value={{comment.id}}>
+                            </div>
+                            <input type="hidden" name="postId" value="{{post.id}}">
+                            <button class="btn btn-success my-2 btn-sm" type="submit">Post</button>
+                        </form>
+                    </div>
+                </div>
+                {%else%}
+                <button class="btn btn-primary my-2 btn-sm" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#replyBox{{comment.id}}" aria-expanded="false" aria-controls="replyBox" disabled>
+                    Login to Reply
+                </button>
+                {%endif%}
+
+                <div class="replies">
+
+                    {% for reply in replyDict|get_val:comment.id %}
+                    <!--#get_val is custom filter -->
+
+                    <div class="row my-2">
+                        <div class="col-md-1">
+                            <img class="rounded-circle mx-auto d-block w-50 " src="/static/images/user.png"
+                                alt="" srcset="">
+                        </div>
+                        <div class="col-md-11">
+                            <b style="font-size: 18px;">{{reply.user.username}}</b> <span class='badge bg-secondary'>
+                                {{reply.timestamp|naturaltime}}</span>
+                            <div>{{reply.comment}}</div>
+                        </div>
+
+                    </div>
+                    <hr>
+                    {% endfor %}
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock body %}
