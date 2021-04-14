@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    New Blog
+{% endblock title %}
+
+{% load static %}
+   
+
+
+{% block body %}
+
+
+<div class="container">
+    
+{% if user.is_authenticated %}
+        
+<h2>New post</h2>
+<form method="POST">
+    {% csrf_token %}
+    <table class='table table-bordered border-primary'>
+        {{ form.as_table }}
+      </table>
+<input type="submit" class=" btn btn-primary"></button>
+</form>
+{% else %}
+<h1 style="margin-top:200px;" class="text-center display-4">Login to Add a Blog</h1>
+{% endif %}
+</div>
+
+
+{% endblock body %}
+
+
+
+
+    

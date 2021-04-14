@@ -3,8 +3,10 @@ from .models import Post,BlogComment
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
-# Create your views here.
+from django.utils import timezone
 from blog.templatetags import extras
+from .forms import PostForm
+
 
 def blogHome(request):
     allPosts=Post.objects.all()
@@ -76,3 +78,16 @@ def handleLogout(request):
         return redirect('/blog')
  
 
+def createBlog(request):
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.timeStamp = timezone.now()
+            post.save()
+            
+            return redirect(f'/blog/{post.slug}')
+    else:
+        form=PostForm()
+    return render(request,'blog/createBlog.html',{'form':form})

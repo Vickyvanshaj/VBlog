@@ -10,8 +10,12 @@ active
 {% load static %}
 
 {% block body %}
+
+
 <div class="container">
-    <h2 class="text-center my-5">Articles By VBlog</h2>
+    <h2 class="text-center my-5">Articles By VBlog
+      <a style="margin-left: 100px;" class="btn btn-danger btn-lg" href="/blog/createBlog" role="button">Create Your Own Blog</a>
+    </h2>
     
     {% for post in allPosts %}
       
